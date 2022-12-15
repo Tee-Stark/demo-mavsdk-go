@@ -1,4 +1,4 @@
-module github.com/mavlink/MAVSDK-Go
+module github.com/Tee-Stark/demo-mavsdk-go
 
 go 1.16
 
