@@ -72,6 +72,38 @@ type ServiceImpl struct{
     	return ch, nil
     }
     /*
+         Download log file synchronously.
+
+         Parameters
+         ----------
+         entry *Entry 
+            path string
+
+         Returns
+         -------
+         False
+         Progress : ProgressData
+              Progress if result is progress
+
+         
+    */
+
+
+    func(s *ServiceImpl)DownloadLogFile(ctx context.Context, entry *Entry , path string) (*DownloadLogFileResponse, error){
+        request := &DownloadLogFileRequest{}
+    	request.Entry = entry
+            
+        request.Path = path
+        response, err := s.Client.DownloadLogFile(ctx, request)
+        if err != nil {
+    		return nil, err
+    	}
+        return response, nil
+
+    }
+
+       
+    /*
          Erase all log files.
 
          

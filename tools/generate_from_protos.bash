@@ -47,8 +47,8 @@ echo "-------------------------------"
 echo "Generating pb and grpc.pb files"
 echo "-------------------------------"
 
-GO_GEN_CMD="/root/go/bin/protoc-gen-go"
-GO_GEN_RPC_CMD="/root/go/bin/protoc-gen-go-grpc"
+GO_GEN_CMD="/home/t-stark/go/bin/protoc-gen-go"
+GO_GEN_RPC_CMD="/home/t-stark/go/bin/protoc-gen-go-grpc"
 
 echo "Generating proto definitions."
 # Generate the message and service definitions using grpc plugins.

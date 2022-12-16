@@ -1032,37 +1032,6 @@ type ServiceImpl struct{
     		}()	
     	return ch, nil
     }
-
-     /*
-         Subscribe to 'Altitude' updates.
-
-         
-    */
-
-    func (a *ServiceImpl) Altitude(ctx context.Context, ) (<-chan  *Altitude , error){
-    		ch := make(chan  *Altitude )
-    		request := &SubscribeAltitudeRequest{}
-    		stream, err := a.Client.SubscribeAltitude(ctx, request)
-    		if err != nil {
-    			return nil, err
-    		}
-    		go func() {
-    			defer close(ch)
-    			for {
-    				m := &AltitudeResponse{}
-    				err := stream.RecvMsg(m)
-    				if err == io.EOF {
-    					break
-    				}
-    				if err != nil {
-    					fmt.Printf("Unable to receive message %v", err)
-    					break
-    				}
-    				ch <- m.GetAltitude()
-    			}
-    		}()	
-    	return ch, nil
-    }
     /*
          Set rate to 'position' updates.
 
@@ -1174,7 +1143,7 @@ type ServiceImpl struct{
 
        
     /*
-         Set rate to 'attitude euler angle' updates.
+         Set rate to 'attitude' updates.
 
          Parameters
          ----------
@@ -1183,33 +1152,11 @@ type ServiceImpl struct{
          
     */
 
-    func(s *ServiceImpl)SetRateAttitudeQuaternion(ctx context.Context, rateHz float64)(*SetRateAttitudeQuaternionResponse, error){
+    func(s *ServiceImpl)SetRateAttitude(ctx context.Context, rateHz float64)(*SetRateAttitudeResponse, error){
         
-        request := &SetRateAttitudeQuaternionRequest{}
+        request := &SetRateAttitudeRequest{}
     	request.RateHz = rateHz
-        response, err := s.Client.SetRateAttitudeQuaternion(ctx, request)
-        if err != nil {
-    		return nil, err
-        }
-        return response, nil
-    }
-
-       
-    /*
-         Set rate to 'attitude quaternion' updates.
-
-         Parameters
-         ----------
-         rateHz float64
-
-         
-    */
-
-    func(s *ServiceImpl)SetRateAttitudeEuler(ctx context.Context, rateHz float64)(*SetRateAttitudeEulerResponse, error){
-        
-        request := &SetRateAttitudeEulerRequest{}
-    	request.RateHz = rateHz
-        response, err := s.Client.SetRateAttitudeEuler(ctx, request)
+        response, err := s.Client.SetRateAttitude(ctx, request)
         if err != nil {
     		return nil, err
         }
@@ -1562,28 +1509,6 @@ type ServiceImpl struct{
         request := &SetRateDistanceSensorRequest{}
     	request.RateHz = rateHz
         response, err := s.Client.SetRateDistanceSensor(ctx, request)
-        if err != nil {
-    		return nil, err
-        }
-        return response, nil
-    }
-
-       
-    /*
-         Set rate to 'Altitude' updates.
-
-         Parameters
-         ----------
-         rateHz float64
-
-         
-    */
-
-    func(s *ServiceImpl)SetRateAltitude(ctx context.Context, rateHz float64)(*SetRateAltitudeResponse, error){
-        
-        request := &SetRateAltitudeRequest{}
-    	request.RateHz = rateHz
-        response, err := s.Client.SetRateAltitude(ctx, request)
         if err != nil {
     		return nil, err
         }

@@ -26,6 +26,8 @@ type LogFilesServiceClient interface {
 	GetEntries(ctx context.Context, in *GetEntriesRequest, opts ...grpc.CallOption) (*GetEntriesResponse, error)
 	// Download log file.
 	SubscribeDownloadLogFile(ctx context.Context, in *SubscribeDownloadLogFileRequest, opts ...grpc.CallOption) (LogFilesService_SubscribeDownloadLogFileClient, error)
+	// Download log file synchronously.
+	DownloadLogFile(ctx context.Context, in *DownloadLogFileRequest, opts ...grpc.CallOption) (*DownloadLogFileResponse, error)
 	// Erase all log files.
 	EraseAllLogFiles(ctx context.Context, in *EraseAllLogFilesRequest, opts ...grpc.CallOption) (*EraseAllLogFilesResponse, error)
 }
@@ -79,6 +81,15 @@ func (x *logFilesServiceSubscribeDownloadLogFileClient) Recv() (*DownloadLogFile
 	return m, nil
 }
 
+func (c *logFilesServiceClient) DownloadLogFile(ctx context.Context, in *DownloadLogFileRequest, opts ...grpc.CallOption) (*DownloadLogFileResponse, error) {
+	out := new(DownloadLogFileResponse)
+	err := c.cc.Invoke(ctx, "/mavsdk.rpc.log_files.LogFilesService/DownloadLogFile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *logFilesServiceClient) EraseAllLogFiles(ctx context.Context, in *EraseAllLogFilesRequest, opts ...grpc.CallOption) (*EraseAllLogFilesResponse, error) {
 	out := new(EraseAllLogFilesResponse)
 	err := c.cc.Invoke(ctx, "/mavsdk.rpc.log_files.LogFilesService/EraseAllLogFiles", in, out, opts...)
@@ -96,6 +107,8 @@ type LogFilesServiceServer interface {
 	GetEntries(context.Context, *GetEntriesRequest) (*GetEntriesResponse, error)
 	// Download log file.
 	SubscribeDownloadLogFile(*SubscribeDownloadLogFileRequest, LogFilesService_SubscribeDownloadLogFileServer) error
+	// Download log file synchronously.
+	DownloadLogFile(context.Context, *DownloadLogFileRequest) (*DownloadLogFileResponse, error)
 	// Erase all log files.
 	EraseAllLogFiles(context.Context, *EraseAllLogFilesRequest) (*EraseAllLogFilesResponse, error)
 	mustEmbedUnimplementedLogFilesServiceServer()
@@ -110,6 +123,9 @@ func (UnimplementedLogFilesServiceServer) GetEntries(context.Context, *GetEntrie
 }
 func (UnimplementedLogFilesServiceServer) SubscribeDownloadLogFile(*SubscribeDownloadLogFileRequest, LogFilesService_SubscribeDownloadLogFileServer) error {
 	return status.Errorf(codes.Unimplemented, "method SubscribeDownloadLogFile not implemented")
+}
+func (UnimplementedLogFilesServiceServer) DownloadLogFile(context.Context, *DownloadLogFileRequest) (*DownloadLogFileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DownloadLogFile not implemented")
 }
 func (UnimplementedLogFilesServiceServer) EraseAllLogFiles(context.Context, *EraseAllLogFilesRequest) (*EraseAllLogFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EraseAllLogFiles not implemented")
@@ -166,6 +182,24 @@ func (x *logFilesServiceSubscribeDownloadLogFileServer) Send(m *DownloadLogFileR
 	return x.ServerStream.SendMsg(m)
 }
 
+func _LogFilesService_DownloadLogFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DownloadLogFileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogFilesServiceServer).DownloadLogFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mavsdk.rpc.log_files.LogFilesService/DownloadLogFile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogFilesServiceServer).DownloadLogFile(ctx, req.(*DownloadLogFileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LogFilesService_EraseAllLogFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EraseAllLogFilesRequest)
 	if err := dec(in); err != nil {
@@ -194,6 +228,10 @@ var LogFilesService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetEntries",
 			Handler:    _LogFilesService_GetEntries_Handler,
+		},
+		{
+			MethodName: "DownloadLogFile",
+			Handler:    _LogFilesService_DownloadLogFile_Handler,
 		},
 		{
 			MethodName: "EraseAllLogFiles",
