@@ -2369,7 +2369,7 @@ func file_mission_proto_init() {
 	if File_mission_proto != nil {
 		return
 	}
-	file_mavsdk_options_proto_init()
+	//file_mavsdk_options_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_mission_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UploadMissionRequest); i {
